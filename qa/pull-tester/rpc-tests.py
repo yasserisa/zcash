@@ -269,16 +269,14 @@ def main():
 
     if args.machines != -1:
         #check if we have evenly divisble groups of test to ensure all tests are included
-        if len(test_list) % args.machines !=0:
-            n = int(len(test_list) // args.machines + 1)
-            split_list = [test_list[i:n] for i in range(0, len(test_list), args.machines)]
-            run_tests(split_list[args.rpcgroup], config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)    
-        else:
-            n = int(len(test_list) / args.machines)
-            split_list = [test_list[i:n+i] for i in range(0, len(test_list),n)]
-            run_tests(split_list[args.rpcgroup], config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)    
+        k, m = divmod(len(test_list), args.machine)
+        split_list = list(a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range( args.machine))
+        run_tests(split_list[args.rpcgroup], config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)    
     else:   
         run_tests(test_list, config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)
+   
+    # keep walletbackup in exclusive step
+    run_tests(["walletbackup.py"], config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)
 
 def run_tests(test_list, src_dir, build_dir, exeext, jobs=1, enable_coverage=False, args=[]):
     BOLD = ("","")
