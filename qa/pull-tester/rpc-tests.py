@@ -270,7 +270,7 @@ def main():
     if args.machines != -1:
         #check if we have evenly divisble groups of test to ensure all tests are included
         k, m = divmod(len(test_list), args.machines)
-        split_list = list(a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range( args.machines))
+        split_list = list(test_list[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range( args.machines))
         run_tests(split_list[args.rpcgroup], config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)    
     else:   
         run_tests(test_list, config["environment"]["SRCDIR"], config["environment"]["BUILDDIR"], config["environment"]["EXEEXT"], args.jobs, args.coverage, passon_args)
